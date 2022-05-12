@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:tial/presentation/widgets/dialog.dart';
-import 'package:tial/presentation/screens/home/home_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tial/domain/home/model/student_model.dart';
 
-deleteConfirmDialog(context, index) {
+import '../../application/home/home_bloc.dart';
+import '../../application/update_screen/update_screen_bloc.dart';
+
+deleteConfirmDialog(context,StudentModel model) {
   return showDialog(
     context: context,
     builder: (ctx) {
@@ -26,11 +29,12 @@ deleteConfirmDialog(context, index) {
           TextButton(
             style: yesnostyle,
             onPressed: () {
-              deleteItem(index);
-              Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (ctx) {
-                return const MyHome();
-              }), (route) => false);
+              BlocProvider.of<UpdateScreenBloc>(context).add(
+                Delete(studentModel: model, context: context),
+              );
+              BlocProvider.of<HomeBloc>(context).add(
+                const HomeEvent.initialize(),
+              );
             },
             child: Text(
               'yes',
@@ -42,8 +46,6 @@ deleteConfirmDialog(context, index) {
     },
   );
 }
-
-
 
 ButtonStyle yesnostyle = TextButton.styleFrom(
     padding: EdgeInsets.zero,

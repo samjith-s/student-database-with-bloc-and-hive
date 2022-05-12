@@ -1,19 +1,17 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:tial/presentation/widgets/delete_confirm.dart';
-import 'package:tial/presentation/widgets/dialog.dart';
-import 'package:tial/presentation/screens/home/home_screen.dart';
-import 'package:tial/presentation/widgets/update_dialog.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tial/application/home/home_bloc.dart';
+import 'package:tial/application/update_screen/update_screen_bloc.dart';
+import 'package:tial/presentation/widgets/delete_confirmation_widget.dart';
 import '../../../domain/home/model/student_model.dart';
-import '../../hive_models/hive_model.dart';
 
 var updateoptionbuttonstyle =
     ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.white));
 
 class ShowDetails extends StatelessWidget {
-  final index;
-  const ShowDetails({Key? key, required this.index}) : super(key: key);
+  final StudentModel model;
+  const ShowDetails({Key? key, required this.model}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,117 +19,108 @@ class ShowDetails extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 241, 234, 234),
       appBar: AppBar(
-        leading: backButtton(context),
         title: const Text('Details'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: SafeArea(
-            child: ValueListenableBuilder(
-          valueListenable: datanotifier,
-          builder: (BuildContext context, StudentModel data, Widget? _) {
-            return SizedBox(
-              width: double.infinity,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Center(
-                      child: CircleAvatar(
-                        backgroundImage: FileImage(File(data.image!)),
-                        radius: 100,
+          child: SizedBox(
+            width: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: BlocConsumer<UpdateScreenBloc, UpdateScreenState>(
+                listener: (context, state) {
+                  BlocProvider.of<HomeBloc>(context).add(
+                    const HomeEvent.initialize(),
+                  );
+                },
+                builder: (context, state) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(
+                        height: 10,
                       ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      'Name : ${data.name}',
-                      style: textStyle,
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      'Age : ${data.age}',
-                      style: textStyle,
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      'Mark : ${data.mark}',
-                      style: textStyle,
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      'Result : ${data.result}',
-                      style: textStyle,
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Expanded(
-                            child: TextButton.icon(
-                              onPressed: () {
-                                updateDialog(context, index);
-                                shownotifier.value = false;
-                              },
-                              icon: const Icon(Icons.update),
-                              label: const Text('Update'),
-                              style: updateoptionbuttonstyle,
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          Expanded(
-                            child: TextButton.icon(
-                              onPressed: () {
-                                deleteConfirmDialog(context, index);
-                                // deleteItem(index);
-                                // Navigator.of(context).pop();
-                              },
-                              icon: const Icon(
-                                Icons.delete,
-                                color: Colors.red,
-                              ),
-                              label: const Text(
-                                'Delete',
-                                style: TextStyle(color: Colors.red),
-                              ),
-                              style: updateoptionbuttonstyle,
-                            ),
-                          ),
-                        ],
+                      Center(
+                        child: CircleAvatar(
+                          backgroundImage:
+                              FileImage(File(state.studentModel.image)),
+                          radius: 100,
+                        ),
                       ),
-                    )
-                  ],
-                ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text('Name : ${state.studentModel.name}',
+                          style: textStyle),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text('Age : ${state.studentModel.age}', style: textStyle),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text('Mark : ${state.studentModel.mark}',
+                          style: textStyle),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text('Result : ${state.studentModel.result}',
+                          style: textStyle),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Expanded(
+                              child: TextButton.icon(
+                                onPressed: () {
+                                  BlocProvider.of<UpdateScreenBloc>(context)
+                                      .add(
+                                    UpdateScreenEvent.showUpdateWidget(
+                                      studentModel: model,
+                                      context: context,
+                                    ),
+                                  );
+                                },
+                                icon: const Icon(Icons.update),
+                                label: const Text('Update'),
+                                style: updateoptionbuttonstyle,
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Expanded(
+                              child: TextButton.icon(
+                                onPressed: () {
+                                  deleteConfirmDialog(context, model);
+                                },
+                                icon: const Icon(
+                                  Icons.delete,
+                                  color: Colors.red,
+                                ),
+                                label: const Text(
+                                  'Delete',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                                style: updateoptionbuttonstyle,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  );
+                },
               ),
-            );
-          },
-        )),
+            ),
+          ),
+        ),
       ),
     );
-  }
-
-  IconButton backButtton(BuildContext context) {
-    return IconButton(
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-        icon: const Icon(Icons.arrow_back));
   }
 }
