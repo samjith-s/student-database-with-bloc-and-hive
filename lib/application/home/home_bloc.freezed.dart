@@ -1084,6 +1084,7 @@ mixin _$HomeState {
   List<StudentModel> get studentList => throw _privateConstructorUsedError;
   List<StudentModel> get searchResultList => throw _privateConstructorUsedError;
   bool get iserror => throw _privateConstructorUsedError;
+  HomeEvent? get transition => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $HomeStateCopyWith<HomeState> get copyWith =>
@@ -1097,7 +1098,10 @@ abstract class $HomeStateCopyWith<$Res> {
   $Res call(
       {List<StudentModel> studentList,
       List<StudentModel> searchResultList,
-      bool iserror});
+      bool iserror,
+      HomeEvent? transition});
+
+  $HomeEventCopyWith<$Res>? get transition;
 }
 
 /// @nodoc
@@ -1113,6 +1117,7 @@ class _$HomeStateCopyWithImpl<$Res> implements $HomeStateCopyWith<$Res> {
     Object? studentList = freezed,
     Object? searchResultList = freezed,
     Object? iserror = freezed,
+    Object? transition = freezed,
   }) {
     return _then(_value.copyWith(
       studentList: studentList == freezed
@@ -1127,7 +1132,22 @@ class _$HomeStateCopyWithImpl<$Res> implements $HomeStateCopyWith<$Res> {
           ? _value.iserror
           : iserror // ignore: cast_nullable_to_non_nullable
               as bool,
+      transition: transition == freezed
+          ? _value.transition
+          : transition // ignore: cast_nullable_to_non_nullable
+              as HomeEvent?,
     ));
+  }
+
+  @override
+  $HomeEventCopyWith<$Res>? get transition {
+    if (_value.transition == null) {
+      return null;
+    }
+
+    return $HomeEventCopyWith<$Res>(_value.transition!, (value) {
+      return _then(_value.copyWith(transition: value));
+    });
   }
 }
 
@@ -1140,7 +1160,11 @@ abstract class _$$_HomeStateCopyWith<$Res> implements $HomeStateCopyWith<$Res> {
   $Res call(
       {List<StudentModel> studentList,
       List<StudentModel> searchResultList,
-      bool iserror});
+      bool iserror,
+      HomeEvent? transition});
+
+  @override
+  $HomeEventCopyWith<$Res>? get transition;
 }
 
 /// @nodoc
@@ -1158,6 +1182,7 @@ class __$$_HomeStateCopyWithImpl<$Res> extends _$HomeStateCopyWithImpl<$Res>
     Object? studentList = freezed,
     Object? searchResultList = freezed,
     Object? iserror = freezed,
+    Object? transition = freezed,
   }) {
     return _then(_$_HomeState(
       studentList: studentList == freezed
@@ -1172,6 +1197,10 @@ class __$$_HomeStateCopyWithImpl<$Res> extends _$HomeStateCopyWithImpl<$Res>
           ? _value.iserror
           : iserror // ignore: cast_nullable_to_non_nullable
               as bool,
+      transition: transition == freezed
+          ? _value.transition
+          : transition // ignore: cast_nullable_to_non_nullable
+              as HomeEvent?,
     ));
   }
 }
@@ -1182,7 +1211,8 @@ class _$_HomeState implements _HomeState {
   const _$_HomeState(
       {required final List<StudentModel> studentList,
       required final List<StudentModel> searchResultList,
-      required this.iserror})
+      required this.iserror,
+      this.transition})
       : _studentList = studentList,
         _searchResultList = searchResultList;
 
@@ -1202,10 +1232,12 @@ class _$_HomeState implements _HomeState {
 
   @override
   final bool iserror;
+  @override
+  final HomeEvent? transition;
 
   @override
   String toString() {
-    return 'HomeState(studentList: $studentList, searchResultList: $searchResultList, iserror: $iserror)';
+    return 'HomeState(studentList: $studentList, searchResultList: $searchResultList, iserror: $iserror, transition: $transition)';
   }
 
   @override
@@ -1217,7 +1249,9 @@ class _$_HomeState implements _HomeState {
                 .equals(other._studentList, _studentList) &&
             const DeepCollectionEquality()
                 .equals(other._searchResultList, _searchResultList) &&
-            const DeepCollectionEquality().equals(other.iserror, iserror));
+            const DeepCollectionEquality().equals(other.iserror, iserror) &&
+            const DeepCollectionEquality()
+                .equals(other.transition, transition));
   }
 
   @override
@@ -1225,7 +1259,8 @@ class _$_HomeState implements _HomeState {
       runtimeType,
       const DeepCollectionEquality().hash(_studentList),
       const DeepCollectionEquality().hash(_searchResultList),
-      const DeepCollectionEquality().hash(iserror));
+      const DeepCollectionEquality().hash(iserror),
+      const DeepCollectionEquality().hash(transition));
 
   @JsonKey(ignore: true)
   @override
@@ -1237,7 +1272,8 @@ abstract class _HomeState implements HomeState {
   const factory _HomeState(
       {required final List<StudentModel> studentList,
       required final List<StudentModel> searchResultList,
-      required final bool iserror}) = _$_HomeState;
+      required final bool iserror,
+      final HomeEvent? transition}) = _$_HomeState;
 
   @override
   List<StudentModel> get studentList => throw _privateConstructorUsedError;
@@ -1245,6 +1281,8 @@ abstract class _HomeState implements HomeState {
   List<StudentModel> get searchResultList => throw _privateConstructorUsedError;
   @override
   bool get iserror => throw _privateConstructorUsedError;
+  @override
+  HomeEvent? get transition => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$$_HomeStateCopyWith<_$_HomeState> get copyWith =>

@@ -59,4 +59,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(state.copyWith(searchResultList: searchList));
     });
   }
+  // @override
+  // void onTransition(Transition<HomeEvent, HomeState> transition) {
+  //   super.onTransition(transition);
+  //   emit(state.copyWith(transition: transition.event));
+  //   log(transition.event.toString());
+  // }
 }

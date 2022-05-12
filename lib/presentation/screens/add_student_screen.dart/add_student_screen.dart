@@ -10,7 +10,7 @@ var namecontroller = TextEditingController();
 final agecontroller = TextEditingController();
 final scorecontroller = TextEditingController();
 final resultcontroller = TextEditingController();
-ValueNotifier optionsnotifier = ValueNotifier(false);
+ValueNotifier<File?> imageNotifier = ValueNotifier(null);
 ImagePicker imagePicker = ImagePicker();
 var _image;
 
@@ -25,20 +25,37 @@ class AddStudentScreen extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(15),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
               children: [
+                const SizedBox(
+                  height: 50,
+                ),
                 textField(hint: 'name', controller: namecontroller),
                 textField(hint: 'age', controller: agecontroller),
                 textField(hint: 'mark', controller: scorecontroller),
                 textField(hint: 'result', controller: resultcontroller),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
+                ValueListenableBuilder(
+                  valueListenable: imageNotifier,
+                  builder: (BuildContext ctx, File? imagefile, Widget? _) {
+                    return Container(
+                      width: imagefile != null ? 100 : 0,
+                      height: imagefile != null ? 100 : 0,
+                      decoration: imagefile != null
+                          ? BoxDecoration(
+                              image: DecorationImage(
+                                  image: FileImage(File(imagefile.path))))
+                          : const BoxDecoration(),
+                    );
+                  },
+                ),
+                const SizedBox(height: 10),
                 GestureDetector(
                   child: const Text('Select Image'),
                   onTap: () async {
                     await selectFromPopUp(context);
                   },
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 ElevatedButton(
                   onPressed: () {
                     if (scorecontroller.text == '' ||
@@ -60,7 +77,7 @@ class AddStudentScreen extends StatelessWidget {
                       AddStudent(model: model, context: context),
                     );
 
-                    _image = '';
+                    clearInputDetails();
                   },
                   child: const Text(
                     'Add',
@@ -78,6 +95,15 @@ class AddStudentScreen extends StatelessWidget {
     );
   }
 
+  void clearInputDetails() {
+    _image = '';
+    imageNotifier.value = null;
+    namecontroller.text = '';
+    agecontroller.text = '';
+    scorecontroller.text = '';
+    resultcontroller.text = '';
+  }
+
   selectFromPopUp(BuildContext context) async {
     showDialog(
       context: context,
@@ -90,6 +116,8 @@ class AddStudentScreen extends StatelessWidget {
                 XFile? image =
                     await imagePicker.pickImage(source: ImageSource.gallery);
                 _image = File(image!.path);
+                imageNotifier.value = _image;
+                Navigator.of(ctx).pop();
               },
               child: const Text(
                 'Select from the gallery',
@@ -104,6 +132,8 @@ class AddStudentScreen extends StatelessWidget {
                 XFile? image =
                     await imagePicker.pickImage(source: ImageSource.camera);
                 _image = File(image!.path);
+                imageNotifier.value = _image;
+                Navigator.of(ctx).pop();
               },
               child: const Text(
                 'Select from the camera',
